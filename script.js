@@ -55,11 +55,11 @@ var questionArray = [
 ]
 
 function displayQuestion () {
-  questionEl.innerText = questionArray.question[0]
-  answerButtonA.innerText = questionArray.question[0].selections[0]
-  answerButtonB.innerText = questionArray.question[0].selections[1]
-  answerButtonC.innerText = questionArray.question[0].selections[2]
-  answerButtonD.innerText = questionArray.question[0].selections[3]
+  questionEl.innerText = questionArray[0].question
+  answerButtonA.innerText = questionArray[0].selections[0]
+  answerButtonB.innerText = questionArray[0].selections[1]
+  answerButtonC.innerText = questionArray[0].selections[2]
+  answerButtonD.innerText = questionArray[0].selections[3]
 }
 
 let randomQuestion
@@ -105,7 +105,7 @@ function selectAnswer (event) {
 //  how? what do they click on --check boxes or click a button
 // event perameter
   console.log(event.target.innerHTML)
-  if (event.target.innerHTML===questionIndex[currentQuestion].answer) {
+  if (event.target.innerHTML===questionArray[currentQuestion].answer) {
     window.alert("Correct!");
   } else {
     window.alert("Incorrect");
