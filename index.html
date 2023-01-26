@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CSS Box Styling</title>
+    <title>Code Quiz</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="./style.css" />
@@ -11,6 +11,7 @@
       <div class= "large-font">Coding Quiz</div>
       <h1>Answer the following code-related questions within the time limit. <br> Incorrect answers will reduce your scoretime by ten seconds!</h1>
       <button class="start-button">Start Quiz</button>
+      <div class="large-font word-blanks"></div>
     </header>
 
     <main>
@@ -22,16 +23,16 @@
             <div class="buttons">
               <button class="btn" id="btn0">
               A. <span id="choice0"></span>
-              </button>
+              </button><br>
               <button class="btn" id="btn1">
               B. <span id="choice1"></span>
-              </button>
+              </button><br>
               <button class="btn" id="btn2">
               C. <span id="choice2"></span>
-              </button>
+              </button><br>
               <button class="btn" id="btn3">
               D. <span id="choice3"></span>
-              </button>
+              </button><br>
             </div>
         </div>
       </section>
@@ -40,11 +41,11 @@
         <div class="card results">
           <div class = "score-container">
           <div>
-            <h2>Score: <span class="win">0 </span> </h2>
+            <h2>Score: <span class="#score">0 </span> </h2>
             <h2>Initials:</h2>
             <form>
-                <input type="text" class="form-input" placeholder="Enter initials" />
-                <button class="initial-button">Add Initials</button>
+                <input type="text" class="form-input" placeholder="Enter initials"/>
+                <button class="initial-button">Submit Initials</button>
             </form>
             </div>
           <button class="reset-button">Reset Score</button>

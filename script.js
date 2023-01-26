@@ -10,53 +10,77 @@ var answerButtonB = document.getElementById('choice1');
 var answerButtonC = document.getElementById('choice2');
 var answerButtonD = document.getElementById('choice3');
 
-var score = document.querySelector("#score");
+var wordBlank = document.querySelector(".word-blanks");
 var initials = document.querySelector(".initial-button");
 var timerEl = document.querySelector(".timer-count");
 
+var score = document.querySelector("#score");
+var correctAnswers = 0;
 
 var timer;
 var timerCount;
 
-var questionIndex = [
+var questionArray = [
     {
         question: "What do you put at the end of a JavaScript Function?",
         answer: "curly bracket",
-        selections: ["curly bracket", "parentheses", "semicolon", "period"]
+        selections: ["curly bracket", "parentheses", "semicolon", "period"],
     },
 
     {
         question: "What does CSS stand for",
         answer: "Cascading Style Sheets",
-        selections: ["Computer Science Sets", "Cascading Style Sheets", "Creative Style Sources", "Cool Source Style"]
+        selections: ["Computer Science Sets", "Cascading Style Sheets", "Creative Style Sources", "Cool Source Style"],
     },
 
     {
         question: "What is NOT a common datatype in JavaScript?",
         answer: "letters",
-        selections: ["strings", "letters", "numbers", "boolean"]
+        selections: ["strings", "letters", "numbers", "boolean"],
     },
     
     {
         question: "What is NOT a common data structure in JavaScript?",
         answer: "strings",
-        selections: ["arrays", "linked list", "strings", "queue"]
+        selections: ["arrays", "linked list", "strings", "queue"],
     },
 
 
     {
         question: "What is NOT a variable type in JavaScript?",
         answer: "button",
-        selections: ["var", "const", "let", "button"]
+        selections: ["var", "const", "let", "button"],
     },
 
 ]
 
-let randomQuestion, currentQuestion
+function displayQuestion () {
+  questionEl.innerText = questionArray.question[0]
+  answerButtonA.innerText = questionArray.question[0].selections[0]
+  answerButtonB.innerText = questionArray.question[0].selections[1]
+  answerButtonC.innerText = questionArray.question[0].selections[2]
+  answerButtonD.innerText = questionArray.question[0].selections[3]
+}
+
+let randomQuestion
+
+var currentQuestion = 0
 
  // Attach event listener to start button to call startGame function on click
- startButton.addEventListener("click", startGame);
+ startButton.addEventListener('click', startGame);
  answerButtonsEl.addEventListener('click', selectAnswer)
+
+ initials.addEventListener("keydown", function(event) {
+  var storedInitials = localStorage.setItem("Initials");
+  // If stored value doesn't exist, leave blank
+  if (storedInitials === null) {
+    return "";
+  } else {
+    // If a value is retrieved from client storage set the Initials to that value
+    initials = storedInitials;
+  }
+ console.log("initials")
+ } )
 
 // set up functions that will be needed
 
@@ -65,9 +89,8 @@ let randomQuestion, currentQuestion
 
 function startGame(event) {
     console.log("started")
-    randomQuestion = questionIndex.sort(() =>Math.random() - .5);
-    currentQuestion = 0
-    displayQuestion(questionIndex[currentQuestion]);
+    randomQuestion = questionArray.sort(() =>Math.random() - .5);
+    displayQuestion(currentQuestion);
 
     timerCount = 60;
 // Prevents start button from being clicked when round is in progress
@@ -75,71 +98,21 @@ function startGame(event) {
     startTimer();
   }
 
-function displayQuestion (questionArray) {
-  questionEl.innerText = questionArray.question
-  answerButtonA.innerText = questionArray.selections[0]
-  answerButtonB.innerText = questionArray.selections[1]
-  answerButtonC.innerText = questionArray.selections[2]
-  answerButtonD.innerText = questionArray.selections[3]
 
-}
-  // const(text, selections, answer) {
-  //   this.text = text;
-  //   this.seletions = selections;
-  //   this.answer = answer;
 
-//     if (quiz.gameOver ()) {
-//       showScore();
-//     } else {
-//       let questionEL = document.getElementById("question");
-//       questionEl.innerHTML = quiz.getQuestionIndex().text;
-//     }
-//       let selections = quiz.getQuestionIndex().selections;
-//       for (let i =0; i < selections.length; i++) {
-//         let selectionsEL = document.getElementById("choice" + i);
-//         selectionsEL.innerHTML = selections [i];
-//         selectAnswer("btn" + i, selections[i]);
-//       }
-//   }
-
-// }
 // I answer a question
 function selectAnswer (event) {
 //  how? what do they click on --check boxes or click a button
 // event perameter
-console.log(event.target.innerHTML)
-if (event.target.innerHTML===questionIndex[currentQuestion].answer) {
-  // they got it right
-} else {
-//  they got it wrong
-// advance currentQuestion ++
-// display question again
-}
-  
-}
-
-// I answer a question correctly
-function checkAnswer() {
-  if (this.getQuestionIndex().isCorrect(answer)) {
-    this.score++;
+  console.log(event.target.innerHTML)
+  if (event.target.innerHTML===questionIndex[currentQuestion].answer) {
+    window.alert("Correct!");
+  } else {
+    window.alert("Incorrect");
   }
-  this.questionIndex++;
+  currentQuestion++
+  displayQuestion(currentQuestion);
 }
-
-
-//  ask if there is a next question before done/no more questions
-
-// function clearAnswer() {
-
-// }
-
-// var score () {
-//   var(questions) {
-//   this.score = 0;
-//   this.questions = questions;
-//   this.questionIntdex=0;
-// }
-// }
 
 // time is subtracted from the clock
 // all questions are answered or the timer reaches 0
@@ -166,20 +139,36 @@ function startTimer() {
     }, 1000);
   }
 
-function displayScore() {
+function calculateScore() {
+  correctAnswers++
+}
 
+function setScore() {
+  correctAnswers.textContent = correctAnswers;
+  localStorage.setItem("Score", correctAnswers);
+}
 
-
+function getScore() {
+  // Get stored value from client storage, if it exists
+  var storedAnswers = localStorage.getItem("Score");
+  // If stored value doesn't exist, set counter to 0
+  if (storedAnswers === null) {
+    correctAnswers = 0;
+  } else {
+    // If a value is retrieved from client storage set the winCounter to that value
+    correctAnswers = storedAnswers;
+  }
+  //Render win count to page
+  score.textContent = correctAnswers;
 }
 
 // the game is over
 function gameOver () {
-  return this.questionIndex === this.questions.length;
+  wordBlank.textContent = "Quiz Over";
 // use local storage 
 // save my initials and my score
-
 }
-
+//  grab local storage and display on screen when they click "add"
 // WHEN the game is over
 // THEN I can
 // ```
@@ -190,5 +179,15 @@ function gameOver () {
 
 // Bonus: Add reset button
 var resetButton = document.querySelector(".reset-button");
+// Attaches event listener to button
+resetButton.addEventListener("click", resetGame);
 
+function resetGame() {
+  // Resets counter
+  correctAnswers = 0;
+  // Renders win and loss counts and sets them into client storage
+  setScore();
+  displayQuestion (currentQuestion);
+
+}
 
