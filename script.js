@@ -101,7 +101,7 @@ function selectAnswer (event) {
     window.alert("Incorrect");
   }
   
-  if (currentQuestion < questionArray.length-1) {
+  if (currentQuestion < questionArray.length) {
     currentQuestion++
     displayQuestion(currentQuestion);
   }
@@ -145,6 +145,7 @@ function setScore() {
 }
 
 function getScore() {
+  card.style.display = "none"
   // Get stored value from client storage, if it exists
   var storedAnswers = localStorage.getItem("Score");
   // If stored value doesn't exist, set counter to 0
@@ -163,7 +164,7 @@ initials.addEventListener("click", function(event) {
   event.preventDefault()
   localStorage.setItem("Initials", userName.value);
   // If stored value doesn't exist, leave blank
-  if (storedInitials === null) {
+  if (userName === null) {
     return "";
   } else {
     // If a value is retrieved from client storage set the Initials to that value
