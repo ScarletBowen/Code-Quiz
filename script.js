@@ -13,6 +13,7 @@ var answerButtonD = document.getElementById('choice3');
 var wordBlank = document.querySelector(".word-blanks");
 var initials = document.querySelector(".initial-button");
 var timerEl = document.querySelector(".timer-count");
+var userName = document.querySelector(".form-input");
 
 var score = document.querySelector("#score");
 var correctAnswers = 0;
@@ -53,34 +54,25 @@ var questionArray = [
     },
 
 ]
-
-function displayQuestion () {
-  questionEl.innerText = questionArray[0].question
-  answerButtonA.innerText = questionArray[0].selections[0]
-  answerButtonB.innerText = questionArray[0].selections[1]
-  answerButtonC.innerText = questionArray[0].selections[2]
-  answerButtonD.innerText = questionArray[0].selections[3]
-}
-
+var currentQuestion = 0
 let randomQuestion
 
-var currentQuestion = 0
+function displayQuestion (currentQuestion) {
+  questionEl.innerText = questionArray[currentQuestion].question
+  answerButtonA.innerText = questionArray[currentQuestion].selections[0]
+  answerButtonB.innerText = questionArray[currentQuestion].selections[1]
+  answerButtonC.innerText = questionArray[currentQuestion].selections[2]
+  answerButtonD.innerText = questionArray[currentQuestion].selections[3]
+}
+
+
 
  // Attach event listener to start button to call startGame function on click
  startButton.addEventListener('click', startGame);
+
+// event listener to select answer
  answerButtonsEl.addEventListener('click', selectAnswer)
 
- initials.addEventListener("keydown", function(event) {
-  var storedInitials = localStorage.setItem("Initials");
-  // If stored value doesn't exist, leave blank
-  if (storedInitials === null) {
-    return "";
-  } else {
-    // If a value is retrieved from client storage set the Initials to that value
-    initials = storedInitials;
-  }
- console.log("initials")
- } )
 
 // set up functions that will be needed
 
@@ -91,7 +83,7 @@ function startGame(event) {
     console.log("started")
     randomQuestion = questionArray.sort(() =>Math.random() - .5);
     displayQuestion(currentQuestion);
-
+    currentQuestion++
     timerCount = 60;
 // Prevents start button from being clicked when round is in progress
     startButton.disabled = true;
@@ -99,19 +91,26 @@ function startGame(event) {
   }
 
 
-
 // I answer a question
 function selectAnswer (event) {
-//  how? what do they click on --check boxes or click a button
-// event perameter
   console.log(event.target.innerHTML)
   if (event.target.innerHTML===questionArray[currentQuestion].answer) {
+    answer = correctAnswers
     window.alert("Correct!");
   } else {
     window.alert("Incorrect");
   }
-  currentQuestion++
-  displayQuestion(currentQuestion);
+  
+  if (currentQuestion < questionArray.length-1) {
+    currentQuestion++
+    displayQuestion(currentQuestion);
+  }
+  else {
+    gameOver();
+  }
+  
+  setScore();
+
 }
 
 // time is subtracted from the clock
@@ -131,7 +130,7 @@ function startTimer() {
         // }
       }
       // Tests if time has run out
-      if (timerCount === 10) {
+      if (timerCount === 0) {
         // Clears interval
         clearInterval(timer);
         gameOver();
@@ -139,13 +138,10 @@ function startTimer() {
     }, 1000);
   }
 
-function calculateScore() {
-  correctAnswers++
-}
-
 function setScore() {
-  correctAnswers.textContent = correctAnswers;
+  score.textContent = correctAnswers;
   localStorage.setItem("Score", correctAnswers);
+  correctAnswers++
 }
 
 function getScore() {
@@ -162,9 +158,24 @@ function getScore() {
   score.textContent = correctAnswers;
 }
 
+// event listener for when user types initials into form
+initials.addEventListener("click", function(event) {
+  event.preventDefault()
+  localStorage.setItem("Initials", userName.value);
+  // If stored value doesn't exist, leave blank
+  if (storedInitials === null) {
+    return "";
+  } else {
+    // If a value is retrieved from client storage set the Initials to that value
+    // initials = storedInitials;
+  }
+ console.log("initials")
+ } )
+
 // the game is over
 function gameOver () {
   wordBlank.textContent = "Quiz Over";
+  // set display type to none for question div
 // use local storage 
 // save my initials and my score
 }
