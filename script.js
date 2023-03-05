@@ -10,16 +10,21 @@ var answerButtonB = document.getElementById('choice1');
 var answerButtonC = document.getElementById('choice2');
 var answerButtonD = document.getElementById('choice3');
 
-var wordBlank = document.querySelector(".word-blanks");
-var initials = document.querySelector(".initial-button");
+
+var initialsEl = document.querySelector(".initial-button");
 var timerEl = document.querySelector(".timer-count");
 var userName = document.querySelector(".form-input");
-
 var score = document.querySelector("#score");
+
+var scoreHistory = document.querySelector(".score-history");
 var correctAnswers = 0;
+
+var initials = userName.value;
 
 var timer;
 var timerCount;
+
+
 
 var questionArray = [
     {
@@ -79,12 +84,12 @@ function displayQuestion (currentQuestion) {
 // click the start button
 // a timer starts and I am presented with a question
 
+
 function startGame(event) {
     console.log("started")
     randomQuestion = questionArray.sort(() =>Math.random() - .5);
     displayQuestion(currentQuestion);
-    currentQuestion++
-    timerCount = 60;
+    timerCount = 75;
 // Prevents start button from being clicked when round is in progress
     startButton.disabled = true;
     startTimer();
@@ -99,11 +104,13 @@ function selectAnswer (event) {
     window.alert("Correct!");
   } else {
     window.alert("Incorrect");
+    timerCount = timerCount - 10;
   }
-  
+  console.log(currentQuestion);
+  currentQuestion++
   if (currentQuestion < questionArray.length) {
-    currentQuestion++
     displayQuestion(currentQuestion);
+    
   }
   else {
     gameOver();
@@ -121,16 +128,10 @@ function startTimer() {
     timer = setInterval(function() {
       timerCount--;
       timerEl.textContent = timerCount;
-      if (timerCount >= 0) {
-        // Tests if win condition is met
-        // if (isWin && timerCount > 0) {
-        //   // Clears interval and stops timer
-        //   clearInterval(timer);
-        //   displayScore();
-        // }
+      if (timerCount > 0) {
       }
       // Tests if time has run out
-      if (timerCount === 0) {
+      if (timerCount <= 0) {
         // Clears interval
         clearInterval(timer);
         gameOver();
@@ -138,9 +139,24 @@ function startTimer() {
     }, 1000);
   }
 
+  // array to hold high scores; //, { 'initals': 'sb', 'score': 10 }],
+ var storedScores = [];
+
+// Get the existing high scores from local storage
+var storedScores = JSON.parse(localStorage.getItem("highScores")) || [];
+
+
 function setScore() {
+  // update score
+
   score.textContent = correctAnswers;
   localStorage.setItem("Score", correctAnswers);
+  
+  // get initials from input field
+  var initials = userName.value;
+  // add score to high scores
+  storedScores.push({score: correctAnswers, initials: initials});
+   // Increment the correctAnswers counter
   correctAnswers++
 }
 
@@ -157,35 +173,53 @@ function getScore() {
   }
   //Render win count to page
   score.textContent = correctAnswers;
-}
+};
 
 // event listener for when user types initials into form
-initials.addEventListener("click", function(event) {
+initialsEl.addEventListener("click", function(event) {
   event.preventDefault()
-  localStorage.setItem("Initials", userName.value);
-  // If stored value doesn't exist, leave blank
-  if (userName === null) {
-    return "";
-  } else {
-    // If a value is retrieved from client storage set the Initials to that value
-    // initials = storedInitials;
+  // Get the initials from the input field
+  var initials = userName.value;
+  if (initials === "") {
+    initials = "";
   }
- console.log("initials")
- } )
+  // Add the current score to the list of high scores with initials
+  storedScores.push({ initials: initials, score: correctAnswers });
+  getStoredScores(initials);
+  });
+
+
+ function getStoredScores(initials) { 
+  // get existing high scores from local storage
+  var storedScores = JSON.parse(localStorage.getItem("highScores"));
+  //if no scores yet, fail gracefully
+  if (storedScores == null) {
+    return
+  }
+  storedScores.sort((a, b) => {
+    return b.score - a.score;
+  });
+  scoreHistory.innerHTML = initials + ": " + correctAnswers + "<br>";
+  // var list = '';
+  //   for (var i = 0; i < storedScores.length; i++) {
+  //     list += storedScores[i].initials + ": " + storedScores[i].score + "<br>";
+  // }
+  // //Render scores to page
+  // scoreHistory.innerHTML = list;
+}
+
+
 
 // the game is over
 function gameOver () {
-  wordBlank.textContent = "Quiz Over";
+   // add alert to say game over
+  window.alert("Quiz Over");
+  // stop timer
+  clearInterval(timer);
   // set display type to none for question div
-// use local storage 
-// save my initials and my score
+  questionEl.style.display = "none";
 }
-//  grab local storage and display on screen when they click "add"
-// WHEN the game is over
-// THEN I can
-// ```
-// Updates win count on screen and sets win count to client storage
- 
+
 
 
 
